@@ -39,7 +39,6 @@ describe("Reetrance", async function () {
   it("Attack fixed contract", async function () {
     await expect(expl.getMoney(fixedContract.address,{value: ethers.utils.parseEther("1")})).to.be.reverted;
     expect(ethers.utils.formatEther((await prov.getBalance(fixedContract.address)))).eq('2.0')
-   // expect(ethers.utils.formatEther((await prov.getBalance(expl.address)))).eq('0.0')
   });
 
 });
