@@ -1,7 +1,7 @@
 {
   "name": "soliditysec",
   "version": "1.0.0",
-  "description": "",
+  "description": "<h2>Reentrancy on a Single Function</h2> The first version of this bug to be noticed involved functions that could be called repeatedly, before the first invocation of the function was finished. This may cause the different invocations of the function to interact in destructive ways.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,5 +18,8 @@
     "chai": "^4.3.4",
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.4.6"
+  },
+  "directories": {
+    "test": "test"
   }
 }

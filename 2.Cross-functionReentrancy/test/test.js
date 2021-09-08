@@ -1,5 +1,5 @@
 const { expect } = require("chai");
-const { ethers } = require("hardhat");
+const { parseEther, formatEther } = require("ethers/lib/utils")
 let prov =  ethers.provider;
 describe("Reetrance", async function () {
     let vuln;
@@ -20,25 +20,25 @@ describe("Reetrance", async function () {
 
   it("deposit vulnerable contract directly", async function () {
     // send eth to vulnerable contract
-   await vuln.deposit({value: ethers.utils.parseEther("2")});
+   await vuln.deposit({value: parseEther("2")});
     // check balance
-   expect(ethers.utils.formatEther(await prov.getBalance(vuln.address))).eq('2.0')
+   expect(formatEther(await prov.getBalance(vuln.address))).eq('2.0')
   });
 
   it("attack", async function () {
-    await expl.getMoney(vuln.address,{value: ethers.utils.parseEther("1")});
-     expect(ethers.utils.formatEther((await prov.getBalance(vuln.address)))).eq('2.0')
-     expect(ethers.utils.formatEther(await vuln.userBalances("0x1125143Dd994cebcB03C77685C2b2F95098bF811"))).eq('1.0');
+    await expl.getMoney(vuln.address,{value: parseEther("1")});
+     expect(formatEther(await prov.getBalance(vuln.address))).eq('2.0')
+     expect(formatEther(await vuln.userBalances("0x1125143Dd994cebcB03C77685C2b2F95098bF811"))).eq('1.0');
   });
 
   it("Deposit fixed contract", async function () {
-    await fixedContract.deposit({value: ethers.utils.parseEther("2")});
-    expect(ethers.utils.formatEther((await prov.getBalance(fixedContract.address)))).eq('2.0')
+    await fixedContract.deposit({value: parseEther("2")});
+    expect(formatEther(await prov.getBalance(fixedContract.address))).eq('2.0')
   });
 
   it("Attack fixed contract", async function () {
     await expl.getMoney(fixedContract.address,{value: ethers.utils.parseEther("1")});
-    expect(ethers.utils.formatEther(await fixedContract.userBalances("0x1125143Dd994cebcB03C77685C2b2F95098bF811"))).eq('0.0');
+    expect(formatEther(await fixedContract.userBalances("0x1125143Dd994cebcB03C77685C2b2F95098bF811"))).eq('0.0');
   });
 
 });

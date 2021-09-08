@@ -1,5 +1,6 @@
 const { expect } = require("chai");
-const { ethers } = require("hardhat");
+//const { ethers } = require("ethers");
+const { parseEther, formatEther } = require("ethers/lib/utils")
 let prov =  ethers.provider;
 describe("Reetrance", async function () {
     let vuln;
@@ -20,25 +21,25 @@ describe("Reetrance", async function () {
 
   it("deposit vulnerable contract directly", async function () {
     // send eth to vulnerable contract
-   await vuln.deposit({value: ethers.utils.parseEther("2")});
+   await vuln.deposit({value: parseEther("2")});
     // check balance
-   expect(ethers.utils.formatEther((await prov.getBalance(vuln.address)))).eq('2.0')
+   expect(formatEther(await prov.getBalance(vuln.address))).eq('2.0')
   });
 
   it("attack", async function () {
-    await expl.getMoney(vuln.address,{value: ethers.utils.parseEther("1")});
-     expect(ethers.utils.formatEther((await prov.getBalance(vuln.address)))).eq('0.0')
-    expect(ethers.utils.formatEther((await prov.getBalance(expl.address)))).eq('0.0')
+    await expl.getMoney(vuln.address,{value: parseEther("1")});
+    expect(formatEther(await prov.getBalance(vuln.address))).eq('0.0')
+    expect(formatEther(await prov.getBalance(expl.address))).eq('0.0')
   });
 
   it("Deposit fixed contract", async function () {
-    await fixedContract.deposit({value: ethers.utils.parseEther("2")});
-    expect(ethers.utils.formatEther((await prov.getBalance(fixedContract.address)))).eq('2.0')
+    await fixedContract.deposit({value: parseEther("2")});
+    expect(formatEther(await prov.getBalance(fixedContract.address))).eq('2.0')
   });
 
   it("Attack fixed contract", async function () {
-    await expect(expl.getMoney(fixedContract.address,{value: ethers.utils.parseEther("1")})).to.be.reverted;
-    expect(ethers.utils.formatEther((await prov.getBalance(fixedContract.address)))).eq('2.0')
+    await expect(expl.getMoney(fixedContract.address,{value: parseEther("1")})).to.be.reverted;
+    expect(formatEther(await prov.getBalance(fixedContract.address))).eq('2.0')
   });
 
 });
