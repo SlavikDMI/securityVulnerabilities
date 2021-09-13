@@ -41,8 +41,42 @@ describe("LockWithRever", function () {
   });
 
   it("Nobody make bid, because tx is reverting", async () => {
-    await expect( auction.bid({value: parseEther("3")})).to.be.reverted;
+    await expect(auction.bid({value: parseEther("3")})).to.be.reverted;
   });
 
+  // Lets try fixed contract
   
+
+  it("Make Bid and currentLeader is our address", async () => {
+    console.log('Work with fixed conttract');
+    await fixAuction.bid({value: parseEther("1")});
+    let highestBid = formatEther(await fixAuction.highestBid());
+    let currentLeader = await fixAuction.currentLeader();
+    expect(highestBid).eq('1.0');
+    expect(currentLeader).eq(signers[0].address)
+  });
+
+  it("Lock vulnerable contract, using exploit contract", async () => {
+    await exploit.attack(fixAuction.address, {value: parseEther("2")});
+    let currentLeader = await fixAuction.currentLeader();
+    expect(currentLeader).eq(exploit.address);
+  });
+  
+  it("Nobody make bid, because tx is reverting", async () => {
+    await expect(fixAuction.bid({value: parseEther("3")})).to.be.reverted;
+  });
+
+  it('Owner can change params and unlock contract', async() => {
+    highestBid = await fixAuction.highestBid();
+    let currentLeaderBefore = await fixAuction.currentLeader();
+    await fixAuction.changeSettings(signers[0].address, highestBid.add(1));
+    let currentLeaderAfter = await fixAuction.currentLeader();
+    expect(currentLeaderBefore).not.eql(currentLeaderAfter);
+  })
+
+  it('Now we can make bid', async() => {
+    highestBid = await fixAuction.highestBid();
+    await fixAuction.bid({value: highestBid.add(1)})
+    expect(await fixAuction.highestBid()).eq(highestBid.add(1));
+  })
 });
