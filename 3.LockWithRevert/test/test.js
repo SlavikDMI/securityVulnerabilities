@@ -2,7 +2,7 @@ const { expect } = require("chai");
 const { parseEther, formatEther } = require("ethers/lib/utils")
 
 
-describe("LockWithRever", function () {
+describe("SelfSestruct send eth", function () {
   let auction;
   let exploit;
   let signers;
